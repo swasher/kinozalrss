@@ -3,13 +3,13 @@ import { getAuth } from 'firebase/auth'
 
 
 const firebaseConfig  = {
-    apiKey: process.env.VUE_APP_apiKey,
-    authDomain: process.env.VUE_APP_authDomain,
-    databaseURL: process.env.VUE_APP_databaseURL,
-    projectId: process.env.VUE_APP_projectId,
-    storageBucket: process.env.VUE_APP_storageBucket,
-    messagingSenderId: process.env.VUE_APP_messagingSenderId,
-    appId: process.env.VUE_APP_appId
+    apiKey: import.meta.env.VITE_APP_apiKey,
+    authDomain: import.meta.env.VITE_APP_authDomain,
+    databaseURL: import.meta.env.VITE_APP_databaseURL,
+    projectId: import.meta.env.VITE_APP_projectId,
+    storageBucket: import.meta.env.VITE_APP_storageBucket,
+    messagingSenderId: import.meta.env.VITE_APP_messagingSenderId,
+    appId: import.meta.env.VITE_APP_appId
 }
 
 // export const db = firebase
