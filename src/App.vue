@@ -1,47 +1,63 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
-import TheWelcome from './components/TheWelcome.vue'
-</script>
-
 <template>
-  <header>
-    <img alt="Vue logo" class="logo" src="./assets/logo.svg" width="125" height="125" />
+  <div>Register</div>
 
-    <div class="wrapper">
-      <HelloWorld msg="You did it!" />
+  <div v-if="error">{{ error }}</div>
+
+  <form action="#" @submit.prevent="Register">
+
+    <label for="name">Name</label>
+    <div class="col-md-6">
+      <input id="name" type="name" class="form-control" name="name" value required autofocus v-model="name"/>
     </div>
-  </header>
 
-  <main>
-    <TheWelcome />
-  </main>
+
+    <label for="email" class="col-md-4 col-form-label text-md-right">Email</label>
+    <div class="col-md-6">
+      <input id="email" type="email" class="form-control" name="email" value required autofocus v-model="email"/>
+    </div>
+
+
+    <label for="password">Password</label>
+    <div class="col-md-6">
+      <input id="password" type="password" class="form-control" name="password" required v-model="password"/>
+    </div>
+
+
+    <div class="form-group row mb-0">
+      <div class="col-md-8 offset-md-4">
+        <button type="submit" class="btn btn-primary">Register</button>
+      </div>
+    </div>
+
+  </form>
+
 </template>
 
-<style scoped>
-header {
-  line-height: 1.5;
-}
 
-.logo {
-  display: block;
-  margin: 0 auto 2rem;
-}
+<script>
+import {ref} from 'vue'
 
-@media (min-width: 1024px) {
-  header {
-    display: flex;
-    place-items: center;
-    padding-right: calc(var(--section-gap) / 2);
+export default {
+  name: "RegisterComponent",
+  setup() {
+    const name = ref('')
+    const email = ref('')
+    const password = ref('')
+    const error = ref(null)
+
+    const Register = async () => {
+      try {
+        await store.dispatch('register', {
+          email: email.value,
+          password: password.value,
+          name: name.value
+        })
+      } catch (err) {
+        error.value = err.message
+      }
+    }
+
+    return {Register, name, email, password, error}
   }
-
-  .logo {
-    margin: 0 2rem 0 0;
-  }
-
-  header .wrapper {
-    display: flex;
-    place-items: flex-start;
-    flex-wrap: wrap;
-  }
-}
-</style>
+};
+</script>
