@@ -1,5 +1,5 @@
 import { createApp } from 'vue'
-import { auth } from './firebase'
+// import { auth } from './firebase'
 import App from './App.vue'
 
 // import './assets/main.css'
