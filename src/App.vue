@@ -1,120 +1,96 @@
 <template>
-    <header>
-<!--
-        <a href="#/">Home</a> |
-        <a href="#/about">Parser</a>
-        <component :is="currentView" />
--->
-
-
-        <Toolbar>
-            <template #start>
-                <a href="#/">Home  </a> |
-                <a href="#/about">  Parser</a>
-
-<!--                <Button hre label="New" icon="pi pi-plus" class="p-button-link" />-->
-<!--                <Button label="Fetch" icon="pi pi-data" class="p-button-link" />-->
-<!--                <i class="pi pi-bars p-toolbar-separator mr-2" />-->
-<!--                <SplitButton label="Save" icon="pi pi-check" :model="items" class="p-button-warning"></SplitButton>-->
+    <n-config-provider :theme="darkTheme">
+        <n-page-header >
+            <template #avatar>
+                <n-avatar
+                    src="https://cdnimg103.lizhi.fm/user/2017/02/04/2583325032200238082_160x160.jpg"
+                />
             </template>
 
-            <template #end>
-                <Button icon="pi pi-search" class="p-button-sm mr-2" />
+            <template #title>
+                <a href="https://anyway.fm/" style="text-decoration: none; color: inherit">Anyway.FM</a>
+
             </template>
-        </Toolbar>
+            <template #subtitle @back="handleBack">
+                <n-space>
+                    <n-button tag="a" href="#/" type="primary">Home</n-button>
+                    <n-button tag="a" href="#/parser" type="primary">Parser</n-button>
+                    <n-button tag="a" href="#/about" type="primary">About</n-button>
+                </n-space>
 
-    </header>
+            </template>
 
+            <template #extra>
+                <n-space>
+                    <n-button>Refresh</n-button>
 
-    <Button>frfre</Button>
-    <Button>wefervfe</Button>
+                    <n-form
+                        ref="formRef"
+                        inline
+                        :label-width="80"
+                        :model="formValue"
+                        :rules="rules"
+                        :size="size"
+                    >
+                        <n-form-item path="user.name">
+                            <n-input placeholder="User"/>
+                        </n-form-item>
 
-    <article>
-        <h4>Get data from firestore</h4>
+                        <n-form-item path="user.age">
+                            <n-input type="password" placeholder="Password"/>
+                        </n-form-item>
 
-        <button type="button" class="btn btn-primary" @click="getMovies">Get Data</button>
+                        <n-form-item>
+                            <n-button @click="handleValidateClick"> Login</n-button>
+                        </n-form-item>
+                    </n-form>
+                </n-space>
+            </template>
+        </n-page-header>
 
-        <table>
-            <tr v-for="(movie, key) in movies">
-                <td>{{ movie.title }}</td>
-                <td>{{ movie.year }}</td>
-            </tr>
-        </table>
-    </article>
-
-    <article>
-        <h4>Create an Account</h4>
-        <p><input type="text" placeholder="Email" v-model="email" /></p>
-        <p><input type="password" placeholder="Password" v-model="password" /></p>
-        <p><button @click="register">Submit</button></p>
-    </article>
-
+        <component :is="currentView"/>
+    </n-config-provider>
 </template>
 
 
-<script setup>
-import {ref, onMounted} from 'vue'
-import { getFirestore, collection, getDocs } from 'firebase/firestore';
-import {connection} from './firebase.js'
-
-const db = getFirestore(connection);
-console.log('db=', db);
-
-const movies = ref([])
-
-onMounted(() => {
-    console.log('myheader mounted');
-})
+<script>
+import Home from "@/components/Home.vue";
+import Parser from "@/components/Parser.vue";
+import About from "@/components/About.vue";
+import NotFound from "@/components/NotFound.vue";
+import { defineComponent } from 'vue'
+import { darkTheme } from 'naive-ui'
 
 
-async function getMovies() {
-    const moviesCol = collection(db, 'movie');
-    const moviesSnapshot = await getDocs(moviesCol);
-    movies.value = moviesSnapshot.docs.map(doc => doc.data());
+const routes = {
+    '/': Home,
+    '/parser': Parser,
+    '/about': About
+
 }
 
 
-const email = ref('')
-const password = ref('')
-import { getAuth, createUserWithEmailAndPassword } from "firebase/auth";
-const auth = getAuth();
-const register = () => {
-    createUserWithEmailAndPassword(auth, email.value, password.value)
-        .then((userCredential) => {
-            // Signed in
-            const user = userCredential.user;
-            console.log('Successfully registered!');
+export default {
+    data() {
+        return {
+            currentPath: window.location.hash
+        }
+    },
+    computed: {
+        currentView() {
+            return routes[this.currentPath.slice(1) || '/'] || NotFound
+        }
+    },
+    mounted() {
+        window.addEventListener('hashchange', () => {
+            this.currentPath = window.location.hash
         })
-        .catch((error) => {
-            const errorCode = error.code;
-            const errorMessage = error.message;
-            console.log(error.message, ' ### Error code:', error.code, )
-        });
+    },
+
 }
 
 </script>
 
 <style scoped>
-.p-button {
-    margin-right: 0.5rem;
-}
 
-body #app header {
-    margin: 0;
-    padding: 0;
-}
-
-
-.template .p-button i {
-    line-height: 2.25rem;
-}
-
-Toolbar {
-    display: flex;
-    width: 100vw;
-}
-
-.wrapper{
-    padding-left: 30px;
-}
 </style>
