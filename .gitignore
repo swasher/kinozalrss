@@ -32,3 +32,6 @@ coverage
 /.vscode/
 
 .firebase\*.cache
+/.firebase/
+/.vs/
+
